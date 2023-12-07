@@ -18,5 +18,11 @@ Implement 2 algorithms:  Ip_to_Decimal And Decimal_To_Ip
 
 Implemented an HttpGet request method:
 	input a single IP, and query all the corresponding information. If the returned value is empty, it means it is outside the collection range.
--------------------------------
 
+-------------------------------Third Commit
+
+Add 1 Service: UpdateIpGeoService.cs 
+
+	Implemented the method of requesting the data source to download the data set and decompressing all downloaded .gz type compressed packages.
+
+-------------------------------Forth Commit

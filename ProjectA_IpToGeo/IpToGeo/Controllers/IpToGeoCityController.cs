@@ -23,17 +23,14 @@ namespace IpToGeo.Controllers
         [HttpGet("{AnyIp}")]
         public GeoliteCityIpv4_String GetAnyIp(string AnyIp)
         {
-            //ip一大 数据库为什么不用索引
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
             var s = IP_To_Num(AnyIp);
-            //EFCore的Linq不是内存执行的 是翻译成SQL语句 所以需要转成tolist()  存到内存
             var innerSelect = _myDbContext.ipToGeoCity.OrderByDescending(m => m.ip_range_start).Where(a => s >= a.ip_range_start).Take(1);
-            //                                     从大到小                                找到第一个比输入的ip小的ip      输出前一个 结果
                                             
             var result =innerSelect.Where(c => s <= c.ip_range_end).ToList().Select(x => new GeoliteCityIpv4_String
-            {                //检验输入的ip是否在集合内
+            {               
 
                 ip_range_start = Int_To_Ip(x.ip_range_start),
                 ip_range_end = Int_To_Ip(x.ip_range_end),

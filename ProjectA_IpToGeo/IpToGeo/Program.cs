@@ -1,4 +1,5 @@
 using IpToGeo.IpToCityDbContext;
+using IpToGeo.MyServices;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,7 @@ builder.Services.AddDbContextPool<MyDbContext>(
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         });
 
-
+builder.Services.AddScoped<UpdateIpGeoService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
