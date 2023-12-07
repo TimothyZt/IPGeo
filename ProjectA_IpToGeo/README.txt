@@ -34,3 +34,12 @@ Use csvhelper to read and write data from large csv files, convert the appropria
 Use the bulkInsert method in the Efcore.Extansion library to replace the commonly used mydbcontext.Add() and mydbcontext.savechanges();
 
 Use Raw SQL language to dynamically create and delete database tables.
+
+-------------------------------Fifth Commit
+
+Add Regularly,start background task service :MyConsumeScopedHostedService.cs
+	(1) Use IHostservice + Cron timer to implement scheduled background tasks
+	(2) Solved scope in singleton problem
+
+Optimized the query algorithm and improved query efficiency through continuous subqueries
+-------------------------------End!

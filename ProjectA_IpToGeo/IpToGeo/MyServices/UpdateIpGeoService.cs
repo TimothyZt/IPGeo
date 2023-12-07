@@ -5,7 +5,6 @@ using IpToGeo.Models;
 using System.Globalization;
 using System.IO.Compression;
 using Microsoft.EntityFrameworkCore;
-using EFCore.BulkExtensions;
 
 namespace IpToGeo.MyServices
 {
@@ -15,7 +14,7 @@ namespace IpToGeo.MyServices
         public  UpdateIpGeoService(MyDbContext context)
         {
             _myDbContext = context;
-       
+           
         }
 
         public async Task<bool> UpdateGo(string fileName, string downloadPath,string directorName,string fileFullPathNotExtan) 
@@ -35,8 +34,12 @@ namespace IpToGeo.MyServices
 
             using (var client = new HttpClient())
             {
+
                 client.Timeout = TimeSpan.FromMinutes(3);
 
+    
+
+              
                 using (var s = client.GetStreamAsync(path))
                 {
                     using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
@@ -52,7 +55,6 @@ namespace IpToGeo.MyServices
         #endregion
 
         #region 解压gz压缩包
-        //https://learn.microsoft.com/zh-tw/dotnet/standard/io/how-to-compress-and-extract-files
         protected async Task<bool> GzUnzip(string filePath)
         {
 
@@ -111,7 +113,7 @@ namespace IpToGeo.MyServices
                     longitude = a.longitude,
                     timezone = a.timezone,
                 });
-
+            
                 await _myDbContext.BulkInsertAsync(data); // async   can u see that
 
 
@@ -131,8 +133,7 @@ namespace IpToGeo.MyServices
         #endregion
 
 
-
-        #region 创建表 //https://juejin.cn/s/ef%206%20execute%20raw%20sql
+        #region 创建表 
         protected void CreateTable()
         {
 

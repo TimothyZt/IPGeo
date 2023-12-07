@@ -18,11 +18,13 @@ namespace IpToGeo.Controllers
             _myDbContext = context;
         }
 
+     
 
 
         [HttpGet("{AnyIp}")]
         public GeoliteCityIpv4_String GetAnyIp(string AnyIp)
         {
+          
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
@@ -30,8 +32,7 @@ namespace IpToGeo.Controllers
             var innerSelect = _myDbContext.ipToGeoCity.OrderByDescending(m => m.ip_range_start).Where(a => s >= a.ip_range_start).Take(1);
                                             
             var result =innerSelect.Where(c => s <= c.ip_range_end).ToList().Select(x => new GeoliteCityIpv4_String
-            {               
-
+            {                
                 ip_range_start = Int_To_Ip(x.ip_range_start),
                 ip_range_end = Int_To_Ip(x.ip_range_end),
                 country_code = x.country_code,
