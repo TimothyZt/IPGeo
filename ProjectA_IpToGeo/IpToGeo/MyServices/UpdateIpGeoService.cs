@@ -5,6 +5,7 @@ using IpToGeo.Models;
 using System.Globalization;
 using System.IO.Compression;
 using Microsoft.EntityFrameworkCore;
+using EFCore.BulkExtensions;
 
 namespace IpToGeo.MyServices
 {
@@ -14,14 +15,16 @@ namespace IpToGeo.MyServices
         public  UpdateIpGeoService(MyDbContext context)
         {
             _myDbContext = context;
-          
+       
         }
 
         public async Task<bool> UpdateGo(string fileName, string downloadPath,string directorName,string fileFullPathNotExtan) 
         {
             DownloadGitData(fileName, downloadPath);
             GzUnzip(directorName);
-          
+            DeleteTable();
+            CreateTable();
+           await  NoheadUploadSmallFile(fileFullPathNotExtan);
             return true;
 
         }
@@ -30,16 +33,10 @@ namespace IpToGeo.MyServices
         protected bool DownloadGitData(string fileName, string path)
         {
 
-            // Seting up the http client used to download the data
             using (var client = new HttpClient())
             {
-                //设置header信息
                 client.Timeout = TimeSpan.FromMinutes(3);
 
-                // Create a file stream to store the downloaded data.
-                // This really can be any type of writeable stream.
-
-                //https://stackoverflow.com/questions/20661652/progress-bar-with-httpclient
                 using (var s = client.GetStreamAsync(path))
                 {
                     using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
@@ -82,6 +79,90 @@ namespace IpToGeo.MyServices
         }
         #endregion
 
+        #region 无头更新插数据
 
+        protected async Task<bool> NoheadUploadSmallFile(string filePath)
+        {
+            IEnumerable<GeoliteCityIpv4_String> geoliteCityIpv4s_String;
+            IEnumerable<GeoliteCityIpv4_Int> geoliteCityIpv4s_Int;
+
+
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                HasHeaderRecord = false,
+                Delimiter = ",",
+            };
+            using (var reader = new StreamReader(filePath))
+            using (var csv = new CsvReader(reader, config))
+            {
+
+                csv.Context.RegisterClassMap<GeoMap>();
+
+                var data = csv.GetRecords<GeoliteCityIpv4_String>().Select(a => new GeoliteCityIpv4_Int()
+                {
+                    ip_range_start = IP_To_Num(a.ip_range_start),
+                    ip_range_end = IP_To_Num(a.ip_range_end),
+                    country_code = a.country_code,
+                    state1 = a.state1,
+                    state2 = a.state2,
+                    city = a.city,
+                    postcode = a.postcode,
+                    latitude = a.latitude,
+                    longitude = a.longitude,
+                    timezone = a.timezone,
+                });
+
+                await _myDbContext.BulkInsertAsync(data); // async   can u see that
+
+
+            }
+            return true;
+        }
+
+        protected ulong IP_To_Num(string ip)
+        {
+            char[] separator = new char[] { '.' };
+            string[] items = ip.Split(separator);
+            return ulong.Parse(items[0]) << 24
+                    | ulong.Parse(items[1]) << 16
+                    | ulong.Parse(items[2]) << 8
+                    | ulong.Parse(items[3]);
+        }
+        #endregion
+
+
+
+        #region 创建表 //https://juejin.cn/s/ef%206%20execute%20raw%20sql
+        protected void CreateTable()
+        {
+
+            _myDbContext.Database.ExecuteSqlRaw(
+                "CREATE TABLE `ipToGeoCity`  (\r\n  " +
+                "`ip_range_start` bigint UNSIGNED NOT NULL,\r\n  " +
+                "`ip_range_end` bigint UNSIGNED NOT NULL,\r\n  " +
+                "`country_code` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n " +
+                " `state1` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
+                "`state2` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
+                "`city` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
+                "`postcode` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
+                "`latitude` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
+                "`longitude` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
+                "`timezone` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n" +
+                "INDEX ip_search (ip_range_start DESC,ip_range_end DESC)\r\n" +
+                ") ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;");
+        }
+        #endregion
+
+        #region 删除表
+        protected void DeleteTable()
+        {
+
+
+            _myDbContext.Database.ExecuteSqlRaw("DROP TABLE IF EXISTS `ipToGeoCity`;");
+            _myDbContext.SaveChanges();
+
+
+        }
+        #endregion
     }
 }

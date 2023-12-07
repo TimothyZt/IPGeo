@@ -26,3 +26,11 @@ Add 1 Service: UpdateIpGeoService.cs
 	Implemented the method of requesting the data source to download the data set and decompressing all downloaded .gz type compressed packages.
 
 -------------------------------Forth Commit
+
+Add 1 Model mapping class：GeoMap.cs  
+
+Use csvhelper to read and write data from large csv files, convert the appropriate type and insert the data into the database.
+
+Use the bulkInsert method in the Efcore.Extansion library to replace the commonly used mydbcontext.Add() and mydbcontext.savechanges();
+
+Use Raw SQL language to dynamically create and delete database tables.

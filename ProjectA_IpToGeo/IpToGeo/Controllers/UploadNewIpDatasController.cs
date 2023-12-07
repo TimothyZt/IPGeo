@@ -9,7 +9,11 @@ using System.IO;
 using System.IO.Compression;
 using Microsoft.EntityFrameworkCore;
 using System.Timers;
+
 using IpToGeo.MyServices;
+
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace IpToGeo.Controllers
 {
@@ -18,21 +22,19 @@ namespace IpToGeo.Controllers
     public class UploadNewIpDatasController : ControllerBase
     {
 
-
         private readonly MyDbContext _myDbContext;
         private readonly UpdateIpGeoService _updateIpGeoService;
-
-        private System.Timers.Timer _Timer;
-        public UploadNewIpDatasController(MyDbContext context, UpdateIpGeoService updateIpGeo)
+    
+        private  System.Timers.Timer _Timer;
+        public UploadNewIpDatasController(MyDbContext context,UpdateIpGeoService updateIpGeo)
         {
             _myDbContext = context;
             _updateIpGeoService = updateIpGeo;
-
-        
+          
+     
         }
 
         #region 系统自动更新 
-        //https://marcus116.blogspot.com/2018/02/c-web-api-httpclient.html
         [HttpPost]
         public async Task<bool> SystemAutoUploadFile()
         {
@@ -40,6 +42,7 @@ namespace IpToGeo.Controllers
             string directorName = @".\";
             string fileFullPath = @".\geolite2-city-ipv4.csv";
             string downloadPath = "https://raw.githubusercontent.com/sapics/ip-location-db/main/geolite2-city/geolite2-city-ipv4.csv.gz";
+
 
 
 
