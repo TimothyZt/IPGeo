@@ -23,36 +23,41 @@ namespace IpToGeo.MyServices
 
         public async Task<bool> UpdateGo()
         {
-            DownloadGitData(fileName, downloadPath);
-            GzUnzip(directorName);
+            await Download(fileName, downloadPath);
+            await GzUnzip(directorName);
             DeleteTable();
             CreateTable();
             await NoheadUploadSmallFile(fileFullPathNotExtan);
             return true;
-
         }
 
-        #region 请求下载
-        protected bool DownloadGitData(string fileName, string path)
+       /// <summary>
+       /// 请求下载
+       /// </summary>
+       /// <param name="fileName"></param>
+       /// <param name="path"></param>
+       /// <returns></returns>
+        protected async Task Download(string fileName, string path)
         {
-
             using (var client = new HttpClient())
             {
                 client.Timeout = TimeSpan.FromMinutes(3);
-                using (var s = client.GetStreamAsync(path))
+                using (var s = await client.GetStreamAsync(path))
                 {
                     using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
                     {
-                        s.Result.CopyTo(fs);
+                        s.CopyTo(fs);
                     }
                 }
             }
-            return true;
         }
-        #endregion
 
-        #region 解压gz压缩包
-        protected bool GzUnzip(string filePath)
+        /// <summary>
+        /// 压缩
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        protected async Task GzUnzip(string filePath)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(filePath);
 
@@ -66,22 +71,23 @@ namespace IpToGeo.MyServices
                     {
                         using (GZipStream gZipStream = new GZipStream(fileStream, CompressionMode.Decompress))
                         {
-                            gZipStream.CopyTo(decompressionStream);
+                            await gZipStream.CopyToAsync(decompressionStream);
                             Console.WriteLine($"Decompressed: {fileToDecompress.Name}");
                         }
                     }
                 }
             }
-            return true;
         }
-        #endregion
 
-        #region 无头更新插数据
-
-        protected async Task<bool> NoheadUploadSmallFile(string filePath)
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        protected async Task NoheadUploadSmallFile(string filePath)
         {
-            IEnumerable<GeoliteCityIpv4_String> geoliteCityIpv4s_String;
-            IEnumerable<GeoliteCityIpv4_Int> geoliteCityIpv4s_Int;
+            IEnumerable<GeoliteCityIpv4String> geoliteCityIpv4s_String;
+            IEnumerable<GeoliteCityIpv4Int> geoliteCityIpv4s_Int;
 
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
@@ -92,62 +98,67 @@ namespace IpToGeo.MyServices
             using (var csv = new CsvReader(reader, config))
             {
                 csv.Context.RegisterClassMap<GeoMap>();
-                var data = csv.GetRecords<GeoliteCityIpv4_String>().Select(a => new GeoliteCityIpv4_Int()
+                var data = csv.GetRecords<GeoliteCityIpv4String>().Select(a => new GeoliteCityIpv4Int()
                 {
-                    ip_range_start = IP_To_Num(a.ip_range_start),
-                    ip_range_end = IP_To_Num(a.ip_range_end),
-                    country_code = a.country_code,
-                    state1 = a.state1,
-                    state2 = a.state2,
-                    city = a.city,
-                    postcode = a.postcode,
-                    latitude = a.latitude,
-                    longitude = a.longitude,
-                    timezone = a.timezone,
+                    IpRangeStart = IP_To_Num(a.IpRangeStart),
+                    IpRangeEnd = IP_To_Num(a.IpRangeEnd),
+                    CountryCode = a.CountryCode,
+                    State1 = a.State1,
+                    State2 = a.State2,
+                    City = a.City,
+                    Postcode = a.Postcode,
+                    Latitude = a.Latitude,
+                    Longitude = a.Longitude,
+                    Timezone = a.Timezone,
                 });
                 await _myDbContext.BulkInsertAsync(data);
             }
-            return true;
         }
 
-        protected ulong IP_To_Num(string ip)
+        /// <summary>
+        /// Ip变十进制整数
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <returns></returns>
+        protected uint IP_To_Num(string ip)
         {
             char[] separator = new char[] { '.' };
             string[] items = ip.Split(separator);
-            return ulong.Parse(items[0]) << 24
-                    | ulong.Parse(items[1]) << 16
-                    | ulong.Parse(items[2]) << 8
-                    | ulong.Parse(items[3]);
+            return uint.Parse(items[0]) << 24
+                    | uint.Parse(items[1]) << 16
+                    | uint.Parse(items[2]) << 8
+                    | uint.Parse(items[3]);
         }
-        #endregion
 
-
-        #region 创建表 
+        /// <summary>
+        /// 创建表
+        /// </summary>
         protected void CreateTable()
         {
             _myDbContext.Database.ExecuteSqlRaw(
                 "CREATE TABLE `ipToGeoCity`  (\r\n  " +
-                "`ip_range_start` bigint UNSIGNED NOT NULL,\r\n  " +
-                "`ip_range_end` bigint UNSIGNED NOT NULL,\r\n  " +
-                "`country_code` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n " +
-                " `state1` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
-                "`state2` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
-                "`city` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
-                "`postcode` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
-                "`latitude` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
-                "`longitude` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
-                "`timezone` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n" +
-                "INDEX ip_search (ip_range_start DESC,ip_range_end DESC)\r\n" +
+                "`IpRangeStart` int UNSIGNED NOT NULL,\r\n  " +
+                "`IpRangeEnd` int UNSIGNED NOT NULL,\r\n  " +
+                "`CountryCode` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n " +
+                " `State1` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
+                "`State2` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
+                "`City` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
+                "`Postcode` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
+                "`Latitude` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
+                "`Longitude` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
+                "`Timezone` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n" +
+                "INDEX ip_search (IpRangeStart DESC)\r\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;");
         }
-        #endregion
 
-        #region 删除表
+        /// <summary>
+        /// 删除表
+        /// </summary>
         protected void DeleteTable()
         {
             _myDbContext.Database.ExecuteSqlRaw("DROP TABLE IF EXISTS `ipToGeoCity`;");
             _myDbContext.SaveChanges();
         }
-        #endregion
+       
     }
 }

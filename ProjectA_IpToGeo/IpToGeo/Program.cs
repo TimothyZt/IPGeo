@@ -15,7 +15,7 @@ builder.Services.AddDbContextPool<IpToGeoDbContext>
         }
     );
 
-builder.Services.AddHostedService<IpToGeoConsumeScopedHostedService>();
+builder.Services.AddHostedService<IpToGeoTmierTaskService>();
 
 builder.Services.AddScoped<UpdateIpGeoService>();
 

@@ -5,17 +5,16 @@ using System.Threading;
 
 namespace IpToGeo.TimerTaskServices
 {
-    public class IpToGeoConsumeScopedHostedService : BackgroundService
+    public class IpToGeoTmierTaskService : BackgroundService
     {
-        private readonly ILogger<IpToGeoConsumeScopedHostedService> _logger;
-
+        private readonly ILogger<IpToGeoTmierTaskService> _logger;
         private readonly CrontabSchedule _crontabSchedule;
         private DateTime _nextRun;
         private const string Schedule = "0 0 1 * * *"; // run day at 1 am
         public IServiceProvider Services { get; }
 
-        public IpToGeoConsumeScopedHostedService(IServiceProvider services,
-        ILogger<IpToGeoConsumeScopedHostedService> logger)
+        public IpToGeoTmierTaskService(IServiceProvider services,
+        ILogger<IpToGeoTmierTaskService> logger)
         {
             Services = services;
             _logger = logger;
@@ -23,6 +22,11 @@ namespace IpToGeo.TimerTaskServices
             _nextRun = _crontabSchedule.GetNextOccurrence(_nextRun > DateTime.Now ? _nextRun : DateTime.Now);
         }
 
+        /// <summary>
+        /// 执行后台任务
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         protected override Task ExecuteAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Consume Scoped Service Hosted Service is working.");

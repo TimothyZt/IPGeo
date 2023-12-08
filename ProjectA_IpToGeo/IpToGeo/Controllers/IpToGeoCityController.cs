@@ -20,11 +20,12 @@ namespace IpToGeo.Controllers
         }
 
         [HttpGet("{anyIp}")]
-        public GeoliteCityIpv4_String GetAnyIp(string anyIp)
+        public GeoliteCityIpv4String GetAnyIp(string anyIp)
         {
             var result = _findIpToGeoService.GetAnyIp(anyIp);
             return result;
         }
+
         [HttpGet]
         public ulong GetDe_Ip(string ip)
         {

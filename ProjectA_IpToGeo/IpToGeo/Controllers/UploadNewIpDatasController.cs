@@ -28,7 +28,10 @@ namespace IpToGeo.Controllers
             _updateIpGeoService = updateIpGeo;
         }
 
-        #region 系统自动更新 
+        /// <summary>
+        /// 请求更新
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public async Task<bool> SystemAutoUploadFile()
         {
@@ -39,7 +42,7 @@ namespace IpToGeo.Controllers
             }
             return false;
         }
-        #endregion
+    
 
 
     }

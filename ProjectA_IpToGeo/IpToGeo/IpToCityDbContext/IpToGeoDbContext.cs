@@ -9,16 +9,13 @@ namespace IpToGeo.IpToCityDbContext
     {
         public IpToGeoDbContext(DbContextOptions<IpToGeoDbContext> options) : base(options)
         {
-
         }
-        //泛型
-        public DbSet<GeoliteCityIpv4_Int> ipToGeoCity { get; set; }//泛型
+        public DbSet<GeoliteCityIpv4Int> ipToGeoCity { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            //从当前程序集命名空间加载所有的IEntityTypeConfiguration
-            builder.Entity<GeoliteCityIpv4_Int>(builder =>
+            builder.Entity<GeoliteCityIpv4Int>(builder =>
             {
                 builder.HasNoKey();
                 builder.ToTable("ipToGeoCity");
