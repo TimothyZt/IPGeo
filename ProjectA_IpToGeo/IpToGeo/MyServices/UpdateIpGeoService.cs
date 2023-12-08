@@ -10,14 +10,18 @@ namespace IpToGeo.MyServices
 {
     public class UpdateIpGeoService
     {
-        private readonly MyDbContext _myDbContext;
-        public  UpdateIpGeoService(MyDbContext context)
+        private readonly string fileName = "geolite2-city-ipv4.csv.gz";
+        private readonly string directorName = @".\";
+        private readonly string fileFullPathNotExtan = @".\geolite2-city-ipv4.csv";
+        private readonly string downloadPath = "https://raw.githubusercontent.com/sapics/ip-location-db/main/geolite2-city/geolite2-city-ipv4.csv.gz";
+        private readonly IpToGeoDbContext _myDbContext;
+
+        public  UpdateIpGeoService(IpToGeoDbContext context)
         {
-            _myDbContext = context;
-           
+            _myDbContext = context;    
         }
 
-        public async Task<bool> UpdateGo(string fileName, string downloadPath,string directorName,string fileFullPathNotExtan) 
+        public async Task<bool> UpdateGo() 
         {
             DownloadGitData(fileName, downloadPath);
             GzUnzip(directorName);
@@ -34,30 +38,22 @@ namespace IpToGeo.MyServices
 
             using (var client = new HttpClient())
             {
-
-                client.Timeout = TimeSpan.FromMinutes(3);
-
-    
-
-              
+                client.Timeout = TimeSpan.FromMinutes(3); 
                 using (var s = client.GetStreamAsync(path))
                 {
                     using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
                     {
-
                         s.Result.CopyTo(fs);
                     }
                 }
             }
             return true;
-
         }
         #endregion
 
         #region 解压gz压缩包
-        protected async Task<bool> GzUnzip(string filePath)
+        protected  bool GzUnzip(string filePath)
         {
-
             DirectoryInfo directoryInfo = new DirectoryInfo(filePath);
 
             foreach (FileInfo fileToDecompress in directoryInfo.GetFiles("*.gz"))
@@ -70,7 +66,6 @@ namespace IpToGeo.MyServices
                     {
                         using (GZipStream gZipStream = new GZipStream(fileStream, CompressionMode.Decompress))
                         {
-
                             gZipStream.CopyTo(decompressionStream);
                             Console.WriteLine($"Decompressed: {fileToDecompress.Name}");
                         }
@@ -88,7 +83,6 @@ namespace IpToGeo.MyServices
             IEnumerable<GeoliteCityIpv4_String> geoliteCityIpv4s_String;
             IEnumerable<GeoliteCityIpv4_Int> geoliteCityIpv4s_Int;
 
-
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = false,
@@ -97,9 +91,7 @@ namespace IpToGeo.MyServices
             using (var reader = new StreamReader(filePath))
             using (var csv = new CsvReader(reader, config))
             {
-
                 csv.Context.RegisterClassMap<GeoMap>();
-
                 var data = csv.GetRecords<GeoliteCityIpv4_String>().Select(a => new GeoliteCityIpv4_Int()
                 {
                     ip_range_start = IP_To_Num(a.ip_range_start),
@@ -114,9 +106,7 @@ namespace IpToGeo.MyServices
                     timezone = a.timezone,
                 });
             
-                await _myDbContext.BulkInsertAsync(data); // async   can u see that
-
-
+                await _myDbContext.BulkInsertAsync(data); 
             }
             return true;
         }
@@ -136,7 +126,6 @@ namespace IpToGeo.MyServices
         #region 创建表 
         protected void CreateTable()
         {
-
             _myDbContext.Database.ExecuteSqlRaw(
                 "CREATE TABLE `ipToGeoCity`  (\r\n  " +
                 "`ip_range_start` bigint UNSIGNED NOT NULL,\r\n  " +
@@ -157,12 +146,8 @@ namespace IpToGeo.MyServices
         #region 删除表
         protected void DeleteTable()
         {
-
-
             _myDbContext.Database.ExecuteSqlRaw("DROP TABLE IF EXISTS `ipToGeoCity`;");
             _myDbContext.SaveChanges();
-
-
         }
         #endregion
     }

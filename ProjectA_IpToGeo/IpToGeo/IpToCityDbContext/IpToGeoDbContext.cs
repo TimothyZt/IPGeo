@@ -5,9 +5,9 @@ using System.Xml;
 
 namespace IpToGeo.IpToCityDbContext
 {
-    public class MyDbContext:DbContext
+    public class IpToGeoDbContext:DbContext
     {
-        public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
+        public IpToGeoDbContext(DbContextOptions<IpToGeoDbContext> options) : base(options)
         {
 
         }
