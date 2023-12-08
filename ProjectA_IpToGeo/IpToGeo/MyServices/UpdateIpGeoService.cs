@@ -16,18 +16,18 @@ namespace IpToGeo.MyServices
         private readonly string downloadPath = "https://raw.githubusercontent.com/sapics/ip-location-db/main/geolite2-city/geolite2-city-ipv4.csv.gz";
         private readonly IpToGeoDbContext _myDbContext;
 
-        public  UpdateIpGeoService(IpToGeoDbContext context)
+        public UpdateIpGeoService(IpToGeoDbContext context)
         {
-            _myDbContext = context;    
+            _myDbContext = context;
         }
 
-        public async Task<bool> UpdateGo() 
+        public async Task<bool> UpdateGo()
         {
             DownloadGitData(fileName, downloadPath);
             GzUnzip(directorName);
             DeleteTable();
             CreateTable();
-           await  NoheadUploadSmallFile(fileFullPathNotExtan);
+            await NoheadUploadSmallFile(fileFullPathNotExtan);
             return true;
 
         }
@@ -38,7 +38,7 @@ namespace IpToGeo.MyServices
 
             using (var client = new HttpClient())
             {
-                client.Timeout = TimeSpan.FromMinutes(3); 
+                client.Timeout = TimeSpan.FromMinutes(3);
                 using (var s = client.GetStreamAsync(path))
                 {
                     using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
@@ -52,7 +52,7 @@ namespace IpToGeo.MyServices
         #endregion
 
         #region 解压gz压缩包
-        protected  bool GzUnzip(string filePath)
+        protected bool GzUnzip(string filePath)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(filePath);
 
@@ -105,8 +105,7 @@ namespace IpToGeo.MyServices
                     longitude = a.longitude,
                     timezone = a.timezone,
                 });
-            
-                await _myDbContext.BulkInsertAsync(data); 
+                await _myDbContext.BulkInsertAsync(data);
             }
             return true;
         }

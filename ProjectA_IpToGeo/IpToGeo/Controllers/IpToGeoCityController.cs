@@ -10,7 +10,7 @@ using System.Text;
 namespace IpToGeo.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/ip")]
     public class IpToGeoCityController : ControllerBase
     {
         private readonly FindIpToGeoService _findIpToGeoService;
@@ -18,21 +18,21 @@ namespace IpToGeo.Controllers
         {
             _findIpToGeoService = findIpToGeoService;
         }
-        
+
         [HttpGet("{anyIp}")]
         public GeoliteCityIpv4_String GetAnyIp(string anyIp)
-        {    
-           var  result =  _findIpToGeoService.GetAnyIp(anyIp);
-            return result ;
+        {
+            var result = _findIpToGeoService.GetAnyIp(anyIp);
+            return result;
         }
         [HttpGet]
         public ulong GetDe_Ip(string ip)
         {
-            var s =_findIpToGeoService.IP_To_Num(ip);  
+            var s = _findIpToGeoService.IP_To_Num(ip);
             return s;
         }
 
-       
+
 
     }
 }

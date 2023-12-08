@@ -17,32 +17,31 @@ using IpToGeo.MyServices;
 
 namespace IpToGeo.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/updater")]
     [ApiController]
     public class UploadNewIpDatasController : ControllerBase
     {
 
         private readonly UpdateIpGeoService _updateIpGeoService;
-    
         public UploadNewIpDatasController(UpdateIpGeoService updateIpGeo)
         {
             _updateIpGeoService = updateIpGeo;
         }
-     
+
         #region 系统自动更新 
         [HttpPost]
         public async Task<bool> SystemAutoUploadFile()
-        { 
-             bool s =  await _updateIpGeoService.UpdateGo();
-                if (s) 
-                { 
-                     return true; 
-                }
-             return false;
+        {
+            bool s = await _updateIpGeoService.UpdateGo();
+            if (s)
+            {
+                return true;
+            }
+            return false;
         }
         #endregion
 
-   
+
     }
 }
 

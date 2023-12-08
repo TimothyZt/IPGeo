@@ -8,13 +8,13 @@ namespace IpToGeo.MyServices
     public class FindIpToGeoService
     {
         private readonly IpToGeoDbContext _ipToGeoDbContext;
-     
-        public FindIpToGeoService(IpToGeoDbContext context) 
+
+        public FindIpToGeoService(IpToGeoDbContext context)
         {
             _ipToGeoDbContext = context;
         }
 
-        public GeoliteCityIpv4_String GetAnyIp(string anyIp) 
+        public GeoliteCityIpv4_String GetAnyIp(string anyIp)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();

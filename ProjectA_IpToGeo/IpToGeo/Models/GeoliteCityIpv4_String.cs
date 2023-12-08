@@ -6,7 +6,7 @@ namespace IpToGeo.Models
     public class GeoliteCityIpv4_String
     {
         [Name("ip_range_start")]
-        
+
         public string? ip_range_start { get; set; }
         [Name("ip_range_end")]
 
