@@ -37,7 +37,7 @@ namespace IpToGeo.TimerTaskServices
                     await Task.Delay(UntilNextExecution(), cancellationToken);
                     using (var scope = Services.CreateScope())
                     {
-                        var update = scope.ServiceProvider.GetService<UpdateIpGeoService>();
+                        var update = scope.ServiceProvider.GetService<IpGeoService>();
                         //task
                         await update.UpdateGo();
                         _logger.LogInformation($"任务完成 - {DateTime.Now}");

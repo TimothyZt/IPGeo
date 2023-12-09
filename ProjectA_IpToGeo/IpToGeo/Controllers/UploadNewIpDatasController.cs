@@ -22,10 +22,10 @@ namespace IpToGeo.Controllers
     public class UploadNewIpDatasController : ControllerBase
     {
 
-        private readonly UpdateIpGeoService _updateIpGeoService;
-        public UploadNewIpDatasController(UpdateIpGeoService updateIpGeo)
+        private readonly IpGeoService _ipGeoService;
+        public UploadNewIpDatasController(IpGeoService updateIpGeo)
         {
-            _updateIpGeoService = updateIpGeo;
+            _ipGeoService = updateIpGeo;
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace IpToGeo.Controllers
         [HttpPost]
         public async Task<bool> SystemAutoUploadFile()
         {
-            bool s = await _updateIpGeoService.UpdateGo();
+            bool s = await _ipGeoService.UpdateGo();
             return s;
             
         }
