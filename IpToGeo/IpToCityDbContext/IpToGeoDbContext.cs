@@ -1,7 +1,5 @@
 ﻿using IpToGeo.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
-using System.Xml;
 
 namespace IpToGeo.IpToCityDbContext
 {
@@ -10,7 +8,7 @@ namespace IpToGeo.IpToCityDbContext
         public IpToGeoDbContext(DbContextOptions<IpToGeoDbContext> options) : base(options)
         {
         }
-        public DbSet<GeoliteCityIpv4Int> ipToGeoCity { get; set; }
+        public DbSet<GeoliteCityIpv4Int> ipToGeoCity { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

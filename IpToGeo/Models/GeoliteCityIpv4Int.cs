@@ -1,5 +1,4 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using System.ComponentModel.DataAnnotations;
 
 namespace IpToGeo.Models
 {

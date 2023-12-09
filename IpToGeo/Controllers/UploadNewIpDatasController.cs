@@ -1,17 +1,5 @@
-﻿using CsvHelper.Configuration;
-using CsvHelper;
-using IpToGeo.IpToCityDbContext;
-using IpToGeo.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
-using System;
-using System.IO;
-using System.IO.Compression;
-using Microsoft.EntityFrameworkCore;
-using System.Timers;
-
-using NCrontab;
-using IpToGeo.MyServices;
+﻿using Microsoft.AspNetCore.Mvc;
+using IpToGeo.Services;
 
 
 
@@ -22,26 +10,22 @@ namespace IpToGeo.Controllers
     public class UploadNewIpDatasController : ControllerBase
     {
 
-        private readonly IpGeoService _ipGeoService;
-        public UploadNewIpDatasController(IpGeoService updateIpGeo)
-        {
-            _ipGeoService = updateIpGeo;
-        }
+        private readonly IIpGeoService _ipGeoService;
+        public UploadNewIpDatasController(IIpGeoService updateIpGeo) => _ipGeoService = updateIpGeo;
 
-        /// <summary>
-        /// 请求更新
-        /// </summary>
-        /// <returns></returns>
         [HttpPost]
-        public async Task<bool> SystemAutoUploadFile()
+        public async Task<IActionResult> TriggerIpGeoDatabaseUpdate()
         {
-            bool s = await _ipGeoService.UpdateGo();
-            return s;
-            
+            try
+            {
+                await _ipGeoService.UpdateIpGeoDataAsync();
+                return NoContent();
+            }
+            catch
+            {
+                return UnprocessableEntity();
+            }
         }
-    
-
-
     }
 }
 

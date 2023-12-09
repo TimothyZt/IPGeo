@@ -1,8 +1,9 @@
 ﻿using CsvHelper.Configuration;
+using IpToGeo.Dtos;
 
 namespace IpToGeo.Models
 {
-    public sealed class GeoMap:ClassMap<GeoliteCityIpv4String>
+    public sealed class GeoMap:ClassMap<IpLocationDbSourceDto>
     {
         public GeoMap()
         {

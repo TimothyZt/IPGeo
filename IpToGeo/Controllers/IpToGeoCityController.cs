@@ -1,30 +1,29 @@
-﻿using IpToGeo.IpToCityDbContext;
-using IpToGeo.Models;
-using IpToGeo.MyServices;
+﻿using IpToGeo.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-
 namespace IpToGeo.Controllers
 {
     [ApiController]
     [Route("api/ip")]
     public class IpToGeoCityController : ControllerBase
     {
-        private readonly IpGeoService _ipGeoService;
-        public IpToGeoCityController(IpGeoService updateIpGeo)
+        private readonly IIpGeoService _ipGeoService;
+        public IpToGeoCityController(IIpGeoService updateIpGeo)
         {
             _ipGeoService = updateIpGeo;
         }
 
         [HttpGet("{anyIp}")]
-        public GeoliteCityIpv4String GetAnyIp(string anyIp)
+        public async Task<IActionResult> GetAnyIp(string anyIp)
         {
-            var result = _ipGeoService.GetAnyIp(anyIp);
-            return result;
+            try
+            {
+                var result = await _ipGeoService.GetIpv4GeoInfoAsync(anyIp);
+                return Ok(result);
+            }
+            catch
+            {
+                return UnprocessableEntity();
+            }
         }
-
     }
 }
