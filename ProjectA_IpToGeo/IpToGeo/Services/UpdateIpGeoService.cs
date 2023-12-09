@@ -25,8 +25,9 @@ namespace IpToGeo.MyServices
         {
             await Download(fileName, downloadPath);
             await GzUnzip(directorName);
-            DeleteTable();
             CreateTable();
+            DeleteTable();
+            AlterTableName();
             await NoheadUploadSmallFile(fileFullPathNotExtan);
             return true;
         }
@@ -136,20 +137,29 @@ namespace IpToGeo.MyServices
         protected void CreateTable()
         {
             _myDbContext.Database.ExecuteSqlRaw(
-                "CREATE TABLE `ipToGeoCity`  (\r\n  " +
-                "`IpRangeStart` int UNSIGNED NOT NULL,\r\n  " +
-                "`IpRangeEnd` int UNSIGNED NOT NULL,\r\n  " +
-                "`CountryCode` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n " +
-                " `State1` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
-                "`State2` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
-                "`City` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
-                "`Postcode` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
-                "`Latitude` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
-                "`Longitude` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n  " +
-                "`Timezone` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,\r\n" +
-                "INDEX ip_search (IpRangeStart DESC)\r\n" +
-                ") ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;");
+                "CREATE TABLE `ipToGeoCity2`  (\n" +
+                "`IpRangeStart` int UNSIGNED NOT NULL,\n" +
+                "`IpRangeEnd` int UNSIGNED NOT NULL,\n" +
+                "`CountryCode` text  ,\n" +
+                " `State1` text  ,\n" +
+                "`State2` text  ,\n" +
+                "`City` text  ,\n" +
+                "`Postcode` text  ,\n" +
+                "`Latitude` text  ,\n" +
+                "`Longitude` text ,\n" +
+                "`Timezone` text  ,\n" +
+                "INDEX ip_search (IpRangeStart DESC)\n" +
+                ") ");
         }
+
+        protected void AlterTableName() 
+        {
+            _myDbContext.Database.ExecuteSqlRaw(
+                "ALTER TABLE ipToGeoCity2 RENAME TO ipToGeoCity \n"
+                ) ;
+        }
+
+
 
         /// <summary>
         /// 删除表

@@ -25,15 +25,5 @@ namespace IpToGeo.Controllers
             var result = _findIpToGeoService.GetAnyIp(anyIp);
             return result;
         }
-
-        [HttpGet]
-        public ulong GetDe_Ip(string ip)
-        {
-            var s = _findIpToGeoService.IP_To_Num(ip);
-            return s;
-        }
-
-
-
     }
 }

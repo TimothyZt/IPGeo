@@ -36,11 +36,8 @@ namespace IpToGeo.Controllers
         public async Task<bool> SystemAutoUploadFile()
         {
             bool s = await _updateIpGeoService.UpdateGo();
-            if (s)
-            {
-                return true;
-            }
-            return false;
+            return s;
+            
         }
     
 

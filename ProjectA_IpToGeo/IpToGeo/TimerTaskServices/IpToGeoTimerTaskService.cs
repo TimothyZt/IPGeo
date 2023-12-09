@@ -5,16 +5,16 @@ using System.Threading;
 
 namespace IpToGeo.TimerTaskServices
 {
-    public class IpToGeoTmierTaskService : BackgroundService
+    public class IpToGeoTimerTaskService : BackgroundService
     {
-        private readonly ILogger<IpToGeoTmierTaskService> _logger;
+        private readonly ILogger<IpToGeoTimerTaskService> _logger;
         private readonly CrontabSchedule _crontabSchedule;
         private DateTime _nextRun;
         private const string Schedule = "0 0 1 * * *"; // run day at 1 am
         public IServiceProvider Services { get; }
 
-        public IpToGeoTmierTaskService(IServiceProvider services,
-        ILogger<IpToGeoTmierTaskService> logger)
+        public IpToGeoTimerTaskService(IServiceProvider services,
+        ILogger<IpToGeoTimerTaskService> logger)
         {
             Services = services;
             _logger = logger;
