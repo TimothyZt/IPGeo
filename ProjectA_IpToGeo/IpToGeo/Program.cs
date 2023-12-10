@@ -15,11 +15,11 @@ builder.Services.AddDbContextPool<IpToGeoDbContext>
         }
     );
 
-builder.Services.AddHostedService<IpToGeoTmierTaskService>();
+builder.Services.AddHostedService<IpToGeoTimerTaskService>();
 
-builder.Services.AddScoped<UpdateIpGeoService>();
+builder.Services.AddScoped<IpGeoService>();
 
-builder.Services.AddScoped<FindIpToGeoService>();
+
 
 builder.Services.AddControllers();
 

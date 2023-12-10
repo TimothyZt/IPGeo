@@ -13,27 +13,18 @@ namespace IpToGeo.Controllers
     [Route("api/ip")]
     public class IpToGeoCityController : ControllerBase
     {
-        private readonly FindIpToGeoService _findIpToGeoService;
-        public IpToGeoCityController(FindIpToGeoService findIpToGeoService)
+        private readonly IpGeoService _ipGeoService;
+        public IpToGeoCityController(IpGeoService ipGeo)
         {
-            _findIpToGeoService = findIpToGeoService;
+            _ipGeoService = ipGeo;
         }
 
         [HttpGet("{anyIp}")]
         public GeoliteCityIpv4String GetAnyIp(string anyIp)
         {
-            var result = _findIpToGeoService.GetAnyIp(anyIp);
+            var result = _ipGeoService.GetAnyIp(anyIp);
             return result;
         }
-
-        [HttpGet]
-        public ulong GetDe_Ip(string ip)
-        {
-            var s = _findIpToGeoService.IP_To_Num(ip);
-            return s;
-        }
-
-
 
     }
 }
