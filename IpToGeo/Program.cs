@@ -1,5 +1,5 @@
 using IpToGeo.IpToCityDbContext;
-using IpToGeo.MyServices;
+using IpToGeo.Services;
 
 using IpToGeo.TimerTaskServices;
 using Microsoft.EntityFrameworkCore;
@@ -17,9 +17,9 @@ builder.Services.AddDbContextPool<IpToGeoDbContext>
 
 builder.Services.AddHostedService<IpToGeoTimerTaskService>();
 
-builder.Services.AddScoped<IpGeoService>();
-
-
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<IDataSourceService, IpLocationDbSourceService>();
+builder.Services.AddScoped<IIpGeoService, MysqlIpGeoService>();
 
 builder.Services.AddControllers();
 

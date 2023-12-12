@@ -1,15 +1,14 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using System.ComponentModel.DataAnnotations;
 
 namespace IpToGeo.Models
 {
-    public class GeoliteCityIpv4String
+    public class GeoliteCityIpv4Int
     {
         [Name("ip_range_start")]
-        public string? IpRangeStart { get; set; }
+        public uint? IpRangeStart { get; set; }
 
         [Name("ip_range_end")]
-        public string? IpRangeEnd { get; set; }
+        public uint? IpRangeEnd { get; set; }
 
         [Name("country_code")]
         public string? CountryCode { get; set; }
@@ -34,6 +33,5 @@ namespace IpToGeo.Models
 
         [Name("timezone")]
         public string? Timezone { get; set; }
-
     }
 }

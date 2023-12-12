@@ -1,7 +1,5 @@
-﻿using IpToGeo.IpToCityDbContext;
-using IpToGeo.MyServices;
+﻿using IpToGeo.Services;
 using NCrontab;
-using System.Threading;
 
 namespace IpToGeo.TimerTaskServices
 {
@@ -10,7 +8,7 @@ namespace IpToGeo.TimerTaskServices
         private readonly ILogger<IpToGeoTimerTaskService> _logger;
         private readonly CrontabSchedule _crontabSchedule;
         private DateTime _nextRun;
-        private const string Schedule = "0 0 1 * * *"; // run day at 1 am
+        private const string Schedule = "0 0 0 * * *"; // run day at 3 am
         public IServiceProvider Services { get; }
 
         public IpToGeoTimerTaskService(IServiceProvider services,
@@ -22,11 +20,6 @@ namespace IpToGeo.TimerTaskServices
             _nextRun = _crontabSchedule.GetNextOccurrence(_nextRun > DateTime.Now ? _nextRun : DateTime.Now);
         }
 
-        /// <summary>
-        /// 执行后台任务
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         protected override Task ExecuteAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Consume Scoped Service Hosted Service is working.");
@@ -37,9 +30,9 @@ namespace IpToGeo.TimerTaskServices
                     await Task.Delay(UntilNextExecution(), cancellationToken);
                     using (var scope = Services.CreateScope())
                     {
-                        var update = scope.ServiceProvider.GetService<IpGeoService>();
+                        var update = scope.ServiceProvider.GetService<IIpGeoService>();
                         //task
-                        await update.UpdateGo();
+                        await update.UpdateIpGeoDataAsync();
                         _logger.LogInformation($"任务完成 - {DateTime.Now}");
                     }
                     _nextRun = _crontabSchedule.GetNextOccurrence(_nextRun > DateTime.Now ? _nextRun : DateTime.Now);

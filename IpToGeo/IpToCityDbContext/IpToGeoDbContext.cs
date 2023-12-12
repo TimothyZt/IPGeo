@@ -1,7 +1,5 @@
 ﻿using IpToGeo.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
-using System.Xml;
 
 namespace IpToGeo.IpToCityDbContext
 {
@@ -18,12 +16,12 @@ namespace IpToGeo.IpToCityDbContext
             builder.Entity<GeoliteCityIpv4Int>(builder =>
             {
                 builder.HasNoKey();
-                builder.ToTable("IpGeo");
+                builder.ToTable("IpToGeo");
             });
             builder.Entity<IpGeoTmp>(builder =>
             {
                 builder.HasNoKey();
-                builder.ToTable("IpGeoTmp");
+                builder.ToTable("IpToGeoTmp");
             });
 
         }
