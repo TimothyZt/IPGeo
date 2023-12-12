@@ -8,7 +8,7 @@ namespace IpToGeo.TimerTaskServices
         private readonly ILogger<IpToGeoTimerTaskService> _logger;
         private readonly CrontabSchedule _crontabSchedule;
         private DateTime _nextRun;
-        private const string Schedule = "0 0 0 * * *"; // run day at 3 am
+        private const string Schedule = "0 0 0 * * *"; // run day at 0 am
         public IServiceProvider Services { get; }
 
         public IpToGeoTimerTaskService(IServiceProvider services,
