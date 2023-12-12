@@ -2,7 +2,7 @@
 
 namespace IpToGeo.Models
 {
-    public class IpGeoTmp
+    public class IpGeoTemp
     {
         [Name("ip_range_start")]
         public uint? IpRangeStart { get; set; }

@@ -18,8 +18,7 @@ namespace IpToGeo.Services
 
         public async Task UpdateIpGeoDataAsync()
         {
-            // todo: change logic to: create-insert-delete-alter
-            await DeleteIpGeoTmpTableAsync();
+            await DeleteIpGeoTempTableAsync();
             await CreateTempTableAsync();
             await GetAndInsertDataAsync();
             await DeleteIpGeoTableAsync();
@@ -30,7 +29,7 @@ namespace IpToGeo.Services
         protected async Task GetAndInsertDataAsync()
         {
             var source = await _dataSource.GetDataSource();
-            var data = source.Select(a => (IpGeoTmp)a);
+            var data = source.Select(a => (IpGeoTemp)a);
             await _ipToGeoDbContext.BulkInsertAsync(data);
         }
 
@@ -47,7 +46,7 @@ namespace IpToGeo.Services
         protected async Task CreateTempTableAsync()
         {
             await _ipToGeoDbContext.Database.ExecuteSqlRawAsync(
-                "CREATE TABLE `IpToGeoTmp`  (\n" +
+                "CREATE TABLE `IpToGeoTemp`  (\n" +
                 "`IpRangeStart` int UNSIGNED NOT NULL,\n" +
                 "`IpRangeEnd` int UNSIGNED NOT NULL,\n" +
                 "`CountryCode` text  ,\n" +
@@ -62,9 +61,9 @@ namespace IpToGeo.Services
                 ") ");
         }
 
-        protected async Task AlterTempTableNameAsync() => await _ipToGeoDbContext.Database.ExecuteSqlRawAsync("ALTER TABLE IpToGeoTmp RENAME TO IpToGeo;");
+        protected async Task AlterTempTableNameAsync() => await _ipToGeoDbContext.Database.ExecuteSqlRawAsync("ALTER TABLE IpToGeoTemp RENAME TO IpToGeo;");
 
         protected async Task DeleteIpGeoTableAsync() => await _ipToGeoDbContext.Database.ExecuteSqlRawAsync("DROP TABLE IF EXISTS `IpToGeo`;");
-        protected async Task DeleteIpGeoTmpTableAsync() => await _ipToGeoDbContext.Database.ExecuteSqlRawAsync("DROP TABLE IF EXISTS `IpToGeoTmp`;");
+        protected async Task DeleteIpGeoTempTableAsync() => await _ipToGeoDbContext.Database.ExecuteSqlRawAsync("DROP TABLE IF EXISTS `IpToGeoTemp`;");
     }
 }

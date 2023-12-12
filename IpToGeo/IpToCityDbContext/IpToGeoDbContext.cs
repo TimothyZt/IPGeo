@@ -9,7 +9,7 @@ namespace IpToGeo.IpToCityDbContext
         {
         }
         public DbSet<GeoliteCityIpv4Int> IpToGeo { get; set; }
-        public DbSet<IpGeoTmp> IpToGeoTmp { get; set; }
+        public DbSet<IpGeoTemp> IpToGeoTemp { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -18,10 +18,10 @@ namespace IpToGeo.IpToCityDbContext
                 builder.HasNoKey();
                 builder.ToTable("IpToGeo");
             });
-            builder.Entity<IpGeoTmp>(builder =>
+            builder.Entity<IpGeoTemp>(builder =>
             {
                 builder.HasNoKey();
-                builder.ToTable("IpToGeoTmp");
+                builder.ToTable("IpToGeoTemp");
             });
 
         }

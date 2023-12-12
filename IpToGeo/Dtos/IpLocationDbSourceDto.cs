@@ -26,7 +26,7 @@ namespace IpToGeo.Dtos
         public string Timezone { get; set; } = null!;
 
         
-        public static explicit operator IpGeoTmp(IpLocationDbSourceDto a) => new IpGeoTmp()
+        public static explicit operator IpGeoTemp(IpLocationDbSourceDto a) => new IpGeoTemp()
         {
             IpRangeStart = IpFormatter.Ipv4ToNum(a.IpRangeStart),
             IpRangeEnd = IpFormatter.Ipv4ToNum(a.IpRangeEnd),
