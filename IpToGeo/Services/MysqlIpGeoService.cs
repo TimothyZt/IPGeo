@@ -29,7 +29,7 @@ namespace IpToGeo.Services
             await AlterTempTableNameAsync();
             await _ipToGeoDbContext.SaveChangesAsync();
         }
-        
+
         /// <summary>
         /// 获取数据
         /// </summary>
@@ -75,9 +75,9 @@ namespace IpToGeo.Services
         }
 
         protected async Task AlterTempTableNameAsync() => await _ipToGeoDbContext.Database.ExecuteSqlRawAsync("ALTER TABLE IpToGeoTemp RENAME TO IpToGeo;");
-        
+
         protected async Task DeleteIpGeoTableAsync() => await _ipToGeoDbContext.Database.ExecuteSqlRawAsync("DROP TABLE IF EXISTS `IpToGeo`;");
-        
+
         protected async Task DeleteIpGeoTempTableAsync() => await _ipToGeoDbContext.Database.ExecuteSqlRawAsync("DROP TABLE IF EXISTS `IpToGeoTemp`;");
     }
 }

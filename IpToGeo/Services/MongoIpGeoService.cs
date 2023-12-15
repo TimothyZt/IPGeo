@@ -15,10 +15,10 @@ namespace IpToGeo.Services
             var mongoClient = new MongoClient(mongoIpGeoService.Value.ConnectionString);
             _mongoDatabase = mongoClient.GetDatabase(mongoIpGeoService.Value.DatabaseName);
             _mongoIpGeoService = _mongoDatabase.GetCollection<GeoliteCityIpv4Int>(mongoIpGeoService.Value.IpToGeosCollectionName);
-            
+
             _dataSource = dataSource;
-        }    
-        
+        }
+
         /// <summary>
         /// 查询
         /// </summary>
@@ -37,7 +37,7 @@ namespace IpToGeo.Services
             var result = await _mongoIpGeoService.FindAsync(filter, options);
             var res = result.FirstOrDefault();
             if (res == null) return null;
-            if (res.IpRangeEnd > ip) return res;
+            if (res.IpRangeEnd >= ip) return res;
             return null;
         }
 
@@ -70,7 +70,7 @@ namespace IpToGeo.Services
         /// </summary>
         /// <param name="newIpToGeos"></param>
         /// <returns></returns>
-        protected  async Task InsertAsync(IEnumerable<IpGeoTemp> newIpToGeos)
+        protected async Task InsertAsync(IEnumerable<IpGeoTemp> newIpToGeos)
         {
             var chunks = newIpToGeos.Chunk(100000);
             foreach (var chunk in chunks)
@@ -83,6 +83,6 @@ namespace IpToGeo.Services
 
         protected async Task DeleteCollection(string dropCollectionName) => await _mongoDatabase.DropCollectionAsync(dropCollectionName);
 
-        protected async Task RenameCollection()=> await _mongoDatabase.RenameCollectionAsync("IpToGeosTemp", "IpToGeos");  
+        protected async Task RenameCollection() => await _mongoDatabase.RenameCollectionAsync("IpToGeosTemp", "IpToGeos");
     }
 }

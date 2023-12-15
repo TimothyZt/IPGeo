@@ -34,7 +34,7 @@ namespace IpToGeo.Services
             // read csv
             return ReadFromCsv(decompressedStream);
         }
-        
+
         private IEnumerable<IpLocationDbSourceDto> ReadFromCsv(Stream stream)
         {
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -45,8 +45,7 @@ namespace IpToGeo.Services
             var reader = new StreamReader(stream);
             var csv = new CsvReader(reader, config);
             csv.Context.RegisterClassMap<GeoMap>();
-            return  csv.GetRecords<IpLocationDbSourceDto>();
+            return csv.GetRecords<IpLocationDbSourceDto>();
         }
     }
-
 }
