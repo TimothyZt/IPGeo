@@ -4,8 +4,7 @@ using IpToGeo.Models;
 using System.Globalization;
 using System.IO.Compression;
 using IpToGeo.Dtos;
-using DnsClient.Protocol;
-using System.Diagnostics;
+
 
 namespace IpToGeo.Services
 {
@@ -28,7 +27,6 @@ namespace IpToGeo.Services
             // https://stackoverflow.com/questions/29851491/how-exactly-are-timeouts-handled-by-httpclient
             var response = await _httpClient.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
-
             // download
             var donwloadStream = await response.Content.ReadAsStreamAsync();
             // unzip
@@ -46,7 +44,6 @@ namespace IpToGeo.Services
             };
             var reader = new StreamReader(stream);
             var csv = new CsvReader(reader, config);
-
             csv.Context.RegisterClassMap<GeoMap>();
             return  csv.GetRecords<IpLocationDbSourceDto>();
         }

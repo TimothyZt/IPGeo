@@ -1,13 +1,7 @@
-﻿using Bogus;
-using IpToGeo.IpToCityDbContext;
-using IpToGeo.Models;
+﻿using IpToGeo.Models;
 using IpToGeo.Utilities;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualBasic;
-using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Core.Operations;
-using System.Diagnostics;
 
 namespace IpToGeo.Services
 {
@@ -19,10 +13,9 @@ namespace IpToGeo.Services
         public MongoIpGeoService(IOptions<IpToGeoMongoDatabaseSettings> mongoIpGeoService, IDataSourceService dataSource)
         {
             var mongoClient = new MongoClient(mongoIpGeoService.Value.ConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(mongoIpGeoService.Value.DatabaseName);
-            _mongoIpGeoService = mongoDatabase.GetCollection<GeoliteCityIpv4Int>(mongoIpGeoService.Value.IpToGeosCollectionName);
-            _mongoDatabase = mongoDatabase;
-
+            _mongoDatabase = mongoClient.GetDatabase(mongoIpGeoService.Value.DatabaseName);
+            _mongoIpGeoService = _mongoDatabase.GetCollection<GeoliteCityIpv4Int>(mongoIpGeoService.Value.IpToGeosCollectionName);
+            
             _dataSource = dataSource;
         }    
         
@@ -33,7 +26,6 @@ namespace IpToGeo.Services
         /// <returns></returns>
         public async Task<GeoliteCityIpv4Int?> GetIpv4GeoInfoAsync(string anyIp)
         {
-            GeoliteCityIpv4Int empty = null;
             var ip = IpFormatter.Ipv4ToNum(anyIp);
             var filter = Builders<GeoliteCityIpv4Int>.Filter.Lte("IpRangeStart", ip);
             var sort = Builders<GeoliteCityIpv4Int>.Sort.Descending(m => m.IpRangeStart);
@@ -44,9 +36,9 @@ namespace IpToGeo.Services
             };
             var result = await _mongoIpGeoService.FindAsync(filter, options);
             var res = result.FirstOrDefault();
-            if (res == null) return empty;
-            if (res.IpRangeEnd>ip) return res;
-            return empty;
+            if (res == null) return null;
+            if (res.IpRangeEnd > ip) return res;
+            return null;
         }
 
         /// <summary>

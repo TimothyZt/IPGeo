@@ -10,6 +10,7 @@ namespace IpToGeo.Models
         [Name("ip_range_start")]
         [BsonId]
         public uint? IpRangeStart { get; set; }
+
         [BsonRepresentation(BsonType.Int64)]
         [Name("ip_range_end")]
         public uint? IpRangeEnd { get; set; }
