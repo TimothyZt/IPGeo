@@ -4,6 +4,8 @@ using IpToGeo.Models;
 using System.Globalization;
 using System.IO.Compression;
 using IpToGeo.Dtos;
+using DnsClient.Protocol;
+using System.Diagnostics;
 
 namespace IpToGeo.Services
 {
@@ -34,20 +36,22 @@ namespace IpToGeo.Services
             // read csv
             return ReadFromCsv(decompressedStream);
         }
-
+        
         private IEnumerable<IpLocationDbSourceDto> ReadFromCsv(Stream stream)
         {
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = false,
                 Delimiter = ",",
+              
             };
 
             var reader = new StreamReader(stream);
             var csv = new CsvReader(reader, config);
 
             csv.Context.RegisterClassMap<GeoMap>();
-            return csv.GetRecords<IpLocationDbSourceDto>();
+            return  csv.GetRecords<IpLocationDbSourceDto>();
+
         }
     }
 

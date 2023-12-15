@@ -1,4 +1,5 @@
 using IpToGeo.IpToCityDbContext;
+using IpToGeo.Models;
 using IpToGeo.Services;
 
 using IpToGeo.TimerTaskServices;
@@ -14,12 +15,18 @@ builder.Services.AddDbContextPool<IpToGeoDbContext>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
     );
+//mongodb service
+builder.Services.Configure<IpToGeoMongoDatabaseSettings>
+    (
+        builder.Configuration.GetSection("IpToGeoMongoDatabase")
+    );
+
 
 builder.Services.AddHostedService<IpToGeoTimerTaskService>();
-
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IDataSourceService, IpLocationDbSourceService>();
-builder.Services.AddScoped<IIpGeoService, MysqlIpGeoService>();
+//builder.Services.AddScoped<IIpGeoService, MysqlIpGeoService>();
+builder.Services.AddScoped<IIpGeoService, MongoIpGeoService>();
 
 builder.Services.AddControllers();
 

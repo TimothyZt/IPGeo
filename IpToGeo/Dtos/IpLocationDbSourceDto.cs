@@ -39,5 +39,19 @@ namespace IpToGeo.Dtos
             Longitude = a.Longitude,
             Timezone = a.Timezone,
         };
+        
+         public static explicit operator GeoliteCityIpv4Int(IpLocationDbSourceDto a) => new GeoliteCityIpv4Int()
+         {
+             IpRangeStart = IpFormatter.Ipv4ToNum(a.IpRangeStart),
+             IpRangeEnd = IpFormatter.Ipv4ToNum(a.IpRangeEnd),
+             CountryCode = a.CountryCode,
+             State1 = a.State1,
+             State2 = a.State2,
+             City = a.City,
+             Postcode = a.Postcode,
+             Latitude = a.Latitude,
+             Longitude = a.Longitude,
+             Timezone = a.Timezone,
+         };
     }
 }
