@@ -43,15 +43,12 @@ namespace IpToGeo.Services
             {
                 HasHeaderRecord = false,
                 Delimiter = ",",
-              
             };
-
             var reader = new StreamReader(stream);
             var csv = new CsvReader(reader, config);
 
             csv.Context.RegisterClassMap<GeoMap>();
             return  csv.GetRecords<IpLocationDbSourceDto>();
-
         }
     }
 

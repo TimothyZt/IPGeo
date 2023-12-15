@@ -16,6 +16,10 @@ namespace IpToGeo.Services
             _dataSource = dataSource;
         }
 
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <returns></returns>
         public async Task UpdateIpGeoDataAsync()
         {
             await DeleteIpGeoTempTableAsync();
@@ -25,7 +29,11 @@ namespace IpToGeo.Services
             await AlterTempTableNameAsync();
             await _ipToGeoDbContext.SaveChangesAsync();
         }
-
+        
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <returns></returns>
         protected async Task GetAndInsertDataAsync()
         {
             var source = await _dataSource.GetDataSource();
@@ -33,6 +41,11 @@ namespace IpToGeo.Services
             await _ipToGeoDbContext.BulkInsertAsync(data);
         }
 
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="anyIp"></param>
+        /// <returns></returns>
         public async Task<GeoliteCityIpv4Int?> GetIpv4GeoInfoAsync(string anyIp)
         {
             var s = IpFormatter.Ipv4ToNum(anyIp);
@@ -62,8 +75,9 @@ namespace IpToGeo.Services
         }
 
         protected async Task AlterTempTableNameAsync() => await _ipToGeoDbContext.Database.ExecuteSqlRawAsync("ALTER TABLE IpToGeoTemp RENAME TO IpToGeo;");
-
+        
         protected async Task DeleteIpGeoTableAsync() => await _ipToGeoDbContext.Database.ExecuteSqlRawAsync("DROP TABLE IF EXISTS `IpToGeo`;");
+        
         protected async Task DeleteIpGeoTempTableAsync() => await _ipToGeoDbContext.Database.ExecuteSqlRawAsync("DROP TABLE IF EXISTS `IpToGeoTemp`;");
     }
 }

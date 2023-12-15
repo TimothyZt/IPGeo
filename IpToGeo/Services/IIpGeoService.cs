@@ -16,6 +16,5 @@ namespace IpToGeo.Services
         /// <param name="anyIp"></param>
         /// <returns>IP-Geo record instance if any. Null otherwise.</returns>
         public Task<GeoliteCityIpv4Int?> GetIpv4GeoInfoAsync(string anyIp);
-
     }
 }
